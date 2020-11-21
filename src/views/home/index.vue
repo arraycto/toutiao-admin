@@ -4,6 +4,12 @@
 
 <script>
 export default {
+  name: 'HomeContainer',
+  data() {
+    return {
+
+    }
+  }
 
 }
 </script>

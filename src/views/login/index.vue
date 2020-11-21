@@ -9,18 +9,13 @@
       >
         <el-form-item prop="mobile">
           <el-input
-            placeholder="13911111111"
             v-model="user.mobile"
             prefix-icon="el-icon-mobile"
           ></el-input>
         </el-form-item>
 
         <el-form-item prop="code">
-          <el-input
-            placeholder="246810"
-            v-model="user.code"
-            prefix-icon="el-icon-lock"
-          ></el-input>
+          <el-input v-model="user.code" prefix-icon="el-icon-lock"></el-input>
         </el-form-item>
 
         <el-form-item prop="checked">
@@ -44,6 +39,7 @@
 //导入封装请求的request
 import request from '@/utils/request.js'
 export default {
+  name: 'HomeContainer',
   data() {
     //自定义手机验证规则
     /*
@@ -58,8 +54,8 @@ export default {
 
     return {
       user: {
-        mobile: '',
-        code: '',
+        mobile: '13911111111',
+        code: '246810',
         checked: false
       },
       rules: {
@@ -102,7 +98,7 @@ export default {
           url: '/mp/v1_0/authorizations',
           data: this.user
         }).then(res => {
-          this.$router.push('/home')
+          this.$router.push('/')
           this.$message.success('登录成功！')
         }).catch(err => {
           this.$message.error('手机号或验证码错误！')
