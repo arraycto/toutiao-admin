@@ -1,10 +1,33 @@
 <template>
   <el-container class="layout-container">
-    <el-aside width="200px" class="aside">
-      <app-aside class="aside-menu"></app-aside>
+    <el-aside :width="isCollapse ? '64px' : '200px'" class="aside">
+      <app-aside class="aside-menu" :is-collapse="isCollapse"></app-aside>
     </el-aside>
     <el-container>
-      <el-header class="header">Header</el-header>
+      <el-header class="header">
+        <div class="floder">
+          <i
+            :class="isCollapse ? 'el-icon-s-unfold' : 'el-icon-s-fold'"
+            style="margin-right: 8px"
+            @click="isCollapse = !isCollapse"
+          ></i>
+          <span>新闻管理系统</span>
+        </div>
+        <div class="userinfo">
+          <div>
+            <el-avatar :src="user.photo"></el-avatar>
+          </div>
+          <el-dropdown>
+            <span class="el-dropdown-link">
+              {{ user.mobile }}<i class="el-icon-arrow-down el-icon--right"></i>
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item icon="el-icon-setting">设置</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-minus">退出</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
+      </el-header>
       <el-main class="main"><router-view /></el-main>
     </el-container>
   </el-container>
@@ -13,10 +36,28 @@
 <script>
 //导入侧边栏菜单组件
 import AppAside from './component/aside.vue'
+import { getUserProfile } from '@/api/user'
 export default {
   name: 'layout-homecontainer',
+  data() {
+    return {
+      isCollapse: false,
+      user: {}
+    }
+  },
+  created() {
+    this.loadUserProfile()
+  },
   components: {
     AppAside
+  },
+
+  methods: {
+    loadUserProfile() {
+      getUserProfile().then(res => {
+        this.user = res.data.data
+      })
+    }
   }
 
 }
@@ -36,7 +77,18 @@ export default {
     }
   }
   .header {
-    background-color: rgb(150, 72, 9);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    .floder {
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .userinfo {
+      display: flex;
+      align-items: center;
+    }
   }
   .main {
     background-color: rgba(146, 117, 117, 0.493);
