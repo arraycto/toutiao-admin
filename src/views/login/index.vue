@@ -98,8 +98,13 @@ export default {
           url: '/mp/v1_0/authorizations',
           data: this.user
         }).then(res => {
-          this.$router.push('/')
+
+
           this.$message.success('登录成功！')
+          //获取登录接口的数据并保存到本地存储
+          window.localStorage.setItem('user', JSON.stringify(res.data.data))
+          this.$router.push('/home')
+
         }).catch(err => {
           this.$message.error('手机号或验证码错误！')
         })

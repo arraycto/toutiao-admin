@@ -1,7 +1,7 @@
 <template>
   <div class="aside">
     <el-menu
-      default-active="2"
+      default-active="home"
       class="el-menu-vertical-demo"
       background-color="#001d35"
       text-color="#fff"
@@ -10,11 +10,11 @@
       router
       :collapse-transition="false"
     >
-      <el-menu-item index="1">
+      <el-menu-item index="home">
         <i class="el-icon-s-home"></i>
         <span slot="title">首页</span>
       </el-menu-item>
-      <el-menu-item index="2">
+      <el-menu-item index="article">
         <i class="el-icon-menu"></i>
         <span slot="title">内容管理</span>
       </el-menu-item>

@@ -14,16 +14,18 @@
           <span>新闻管理系统</span>
         </div>
         <div class="userinfo">
-          <div>
+          <div style="margin-right: 8px">
             <el-avatar :src="user.photo"></el-avatar>
           </div>
           <el-dropdown>
             <span class="el-dropdown-link">
-              {{ user.mobile }}<i class="el-icon-arrow-down el-icon--right"></i>
+              {{ user.name }}<i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item icon="el-icon-setting">设置</el-dropdown-item>
-              <el-dropdown-item icon="el-icon-minus">退出</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-minus" @click.native="onLogout"
+                >退出</el-dropdown-item
+              >
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -57,6 +59,12 @@ export default {
       getUserProfile().then(res => {
         this.user = res.data.data
       })
+    },
+    onLogout() {
+      //清除用户token
+      window.localStorage.removeItem('user')
+      //把代码push到登录界面
+      this.$router.push('/login')
     }
   }
 
@@ -89,9 +97,6 @@ export default {
       display: flex;
       align-items: center;
     }
-  }
-  .main {
-    background-color: rgba(146, 117, 117, 0.493);
   }
 }
 </style>

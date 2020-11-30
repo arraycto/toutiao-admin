@@ -11,4 +11,18 @@ const request = axios.create({
     timeout: 7000
 })
 
+//请求拦截器
+request.interceptors.request.use(
+    //所有请求都会经过这里
+    //config是当前请求相关的配置信息
+    function(config){
+        const user = JSON.parse(window.localStorage.getItem('user'))
+        //如果有登录用户信息 则同意设置用户信息
+        if(user) {
+            config.headers.Authorization = `Bearer ${user.token}`
+        }
+        return config
+    }
+)
+
 export default request 
