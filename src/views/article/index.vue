@@ -50,17 +50,49 @@
       </div>
       <div class="text item">
         <el-table :data="articles" stripe style="width: 100%">
-          <el-table-column prop="cover" label="封面"> </el-table-column>
+          <el-table-column label="封面">
+            <template slot-scope="scope">
+              <img
+                v-if="scope.row.cover.images[0]"
+                class="articles-cover"
+                :src="scope.row.cover.images[0]"
+                alt=""
+              />
+              <img v-else class="articles-cover" src="./no-image.png" alt="" />
+            </template>
+          </el-table-column>
           <el-table-column prop="title" label="标题"> </el-table-column>
-          <el-table-column prop="status" label="状态"> </el-table-column>
+          <el-table-column label="状态">
+            <template slot-scope="scope">
+              <el-tag v-if="scope.row.status === 0" type="warning">草稿</el-tag>
+              <el-tag v-else-if="scope.row.status === 1">待审核</el-tag>
+              <el-tag v-else-if="scope.row.status === 2" type="success"
+                >审核通过</el-tag
+              >
+              <el-tag v-else-if="scope.row.status === 3" type="danger"
+                >审核失败</el-tag
+              >
+              <el-tag v-else-if="scope.row.status === 4" type="info"
+                >已删除</el-tag
+              >
+            </template>
+          </el-table-column>
           <el-table-column prop="pubdate" label="发布时间"> </el-table-column>
           <el-table-column prop="options" label="操作" width="180">
-            <el-button type="primary" icon="el-icon-edit" circle></el-button>
-            <el-button type="danger" icon="el-icon-delete" circle></el-button>
+            <template slot-scope="scope">
+              <el-button type="primary" icon="el-icon-edit" circle></el-button>
+              <el-button type="danger" icon="el-icon-delete" circle></el-button>
+            </template>
           </el-table-column>
         </el-table>
         <!--分页区域-->
-        <el-pagination background layout="prev, pager, next" :total="1000">
+        <el-pagination
+          @current-change="onCurrentChange"
+          background
+          layout="prev, pager, next"
+          :total="totalCount"
+          :page-size="pageSize"
+        >
         </el-pagination>
       </div>
     </el-card>
@@ -85,7 +117,10 @@ export default {
         desc: ''
       },
       value1: [new Date(2020, 10, 10, 10, 10), new Date(2020, 10, 11, 10, 10)],
-      articles: []
+      articles: [],
+      totalCount: 0, //总数据条数
+      pageSize: 10
+
     }
 
   },
@@ -94,17 +129,27 @@ export default {
       console.log('submit!');
     },
     //获取文章数据列表
-    loadArticles() {
-      getArticles().then(res => {
+    loadArticles(page = 1) {
+      getArticles({
+        page,
+        per_page: this.pageSize
+
+      }).then(res => {
         this.articles = res.data.data.results
+        this.totalCount = res.data.data.total_count
         this.$message.success('获取文章列表成功！')
 
+
+
       })
+    },
+    onCurrentChange(page) {
+      this.loadArticles(page)
     }
   },
   created() {
     //在页面初始化的时候加载数据进来
-    this.loadArticles()
+    this.loadArticles(1)
   }
 }
 </script>
@@ -115,5 +160,10 @@ export default {
 }
 .el-pagination {
   margin-top: 20px;
+}
+.articles-cover {
+  width: 100px;
+  background-size: cover;
+  height: 100px;
 }
 </style>
