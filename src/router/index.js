@@ -4,6 +4,7 @@ import Login from '@/views/login/index.vue'
 import Home from '@/views/home/index.vue'
 import Layout from '@/views/layout/index.vue'
 import Article from '@/views/article/index.vue'
+import Publish from '@/views/publish/index.vue'
 
 
 Vue.use(VueRouter)
@@ -32,6 +33,11 @@ const router = new VueRouter({
                     path: '/article', //path位空，会作为默认子路由
                     name: Article,
                     component: Article
+                },
+                {
+                    path:'/publish',
+                    name:Publish,
+                    component:Publish
                 }
             ]
         },

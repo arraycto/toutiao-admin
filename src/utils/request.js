@@ -1,4 +1,5 @@
 import axios from 'axios'
+import JSONbig from 'json-bigint'
 
 
 
@@ -7,8 +8,16 @@ import axios from 'axios'
 //创建axios实列，复制一个axios
 const request = axios.create({
     //请求跟路径
-    baseURL: 'http://ttapi.research.itcast.cn/',
-    timeout: 7000
+    baseURL: 'http://ttapi.research.itcast.cn',
+    //定义后端返回的原始数据处理
+    transformResponse: [function (data) {
+        // Do whatever you want to transform the data
+       try{
+         return JSONbig.parse(data)
+       }catch(err){
+         return data
+       }
+    }]
 })
 
 //请求拦截器
