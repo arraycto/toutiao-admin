@@ -19,7 +19,12 @@
           <el-input v-model="Article.title"></el-input>
         </el-form-item>
         <el-form-item label="内容" prop="content">
-          <el-input type="textarea" v-model="Article.content"></el-input>
+          <el-tiptap
+            lang="zh"
+            height="500"
+            v-model="Article.content"
+            :extensions="extensions"
+          ></el-tiptap>
         </el-form-item>
 
         <el-form-item label="封面" prop="cover">
@@ -54,12 +59,77 @@
 <script>
 //加载频道模块进来
 import { getArticlesChanels, addArticle, updataArticle, getArticle } from '@/api/article.js'
+//局部引入tiptapj富文本编辑器
+import { ElementTiptap } from 'element-tiptap'
+//加载el-tiptap样式文件
+import 'element-tiptap/lib/index.css';
+//加载上传用户图片素材
+import { uploadImage } from '@/api/image.js'
+//引入element-tiptap相关组件
+import {
+  // 需要的 extensions
+  Doc,
+  Text,
+  Paragraph,
+  Heading,
+  Bold,
+  Underline,
+  Italic,
+  Strike,
+  ListItem,
+  BulletList,
+  OrderedList,
+  CodeView,
+  Print,
+  CodeBlock,
+  Image,
+  FontType,
+  Fullscreen,
+  Link
+} from 'element-tiptap';
+
 
 export default {
   name: 'publishIndex',
+  components: {
+    'el-tiptap': ElementTiptap,
+  },
   data() {
     return {
-
+      extensions: [
+        new Doc(),
+        new Text(),
+        new Paragraph(),
+        new Heading({ level: 5 }),
+        new Bold({ bubble: true }), // 在气泡菜单中渲染菜单按钮
+        new Underline({ bubble: true, menubar: false }), // 在气泡菜单而不在菜单栏中渲染菜单按钮
+        new Italic(),
+        new Strike(),
+        new ListItem(),
+        new BulletList(),
+        new OrderedList(),
+        new CodeView(),
+        new Print(),
+        new CodeBlock(),
+        new Image({
+          uploadRequest(file) {
+            const fd = new FormData()
+            fd.append('image', file)
+            //第一个是返回promise对象
+            return uploadImage(fd).then(res => {
+              //第二个是返回最后的结果
+              return res.data.data.url
+            })
+          }
+        }),
+        new FontType(),
+        new Fullscreen(),
+        new Link()
+      ],
+      content: `
+        <h1>Heading</h1>
+        <p>This Editor is awesome!</p>
+      `,
       channels: [],
       Article: {
         title: '',
@@ -80,8 +150,10 @@ export default {
           { required: true, message: '请输入内容', trigger: 'blur' },
           { min: 10, max: 50, message: '长度在 10 到 50 个字符', trigger: 'blur' }
         ]
-      }
+      },
+
     }
+
   },
   methods: {
     loadChanels() {
